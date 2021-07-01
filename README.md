@@ -31,9 +31,9 @@ _**ex:**_
 
 
 
+<br />
 
-
-##Architecture
+## Architecture 
 * you can  set these value-form .env to be the dynamic overall project
     * TAX=14
     * PRECISION=2 //number of PRECISION you want to view price
@@ -73,7 +73,7 @@ _**ex:**_
 1- I chose to add all currencies and all Opposite symbols in a file in the config you can find it
 `config/currencies` as reading from a file will be better than reading from third-party or even DB,Because these currencies rarely changed.
 
-2- I Put an index on `name` column as this will make the query is faster.
+2- I Put an index on `name` column as this will make the query  faster.
 
 
 ## Testing
