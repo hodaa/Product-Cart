@@ -12,9 +12,6 @@ class Product extends Model
 {
     use HasFactory;
 
-
-
-
     /**
      * @param $value
      * @return string

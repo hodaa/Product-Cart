@@ -21,7 +21,7 @@ class CartService implements CartInterface
     {
         $result=[];
         foreach ($matchedProducts as  $item) {
-            $itemCount= $selectedProducts[$item->name];
+            $itemCount = $selectedProducts[$item->name];
             $result[$item->name] =  $item->price * $itemCount;
         }
         return array_sum($result);

@@ -10,6 +10,8 @@ use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Product;
+use App\Services;
+use Mockery\MockInterface;
 
 class CartServiceTest extends TestCase
 {
@@ -43,11 +45,14 @@ class CartServiceTest extends TestCase
         $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>1,'jacket'=>1,'shoes'=>1]);
         $this->assertEquals($response, 70.96);
 
-        config(['cart.currency' => 'EGP']);
 
-        $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>1,'jacket'=>1,'shoes'=>1]);
-        $rate = app(CurrencyService::class)->getExchangeRate('EGP');
-        $subTotal= ($rate * 10.99)+($rate * 14.99)+($rate * 19.99)+($rate * 24.99);
+        config(['cart.currency' => 'EGP']);
+        $this->mock(CurrencyService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('convertPrice')->andReturn(155.55);
+        });
+
+        $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>2,'jacket'=>1,'shoes'=>1]);
+        $subTotal= 155.55* 5;
 
         $this->assertEquals(round($response, 2), round($subTotal, 2));
     }
@@ -81,6 +86,4 @@ class CartServiceTest extends TestCase
         $this->assertIsFloat($response);
         $this->assertEquals(290, $response);
     }
-
-
 }
