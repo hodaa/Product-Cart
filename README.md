@@ -7,7 +7,7 @@ This is CLI for a cart of products, accepts multiple products, combines offers, 
 * Put this in your .env
 
     * TAX=14
-    * PRECISION=3
+    * PRECISION=2
     * CURRENCY=USD
     * DEFAULT_CURRENCY=USD
 
@@ -21,10 +21,11 @@ From PHP image
 
 
 ## Usage
-php artisan create: cart USD jacket Shoes
+php artisan create: cart {currency} {items}
 
 _**ex:**_
-php artisan create: cart EGP jacket Shoes jacket t-shirt
+* `php artisan create: cart USD jacket shoes jacket t-shirt`
+* `php artisan create: cart EGP Pants`
 
 
 
