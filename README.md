@@ -90,6 +90,7 @@ Run
 * Laravel
 * Docker
 * phpunit
+* mysql 8
 
 
 
