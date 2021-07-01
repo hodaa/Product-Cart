@@ -29,13 +29,7 @@ _**ex:**_
 
 
 
-## Testing
-From PHP image
-* `docker-compose exec php bash`
 
-Run
-
-    vendor/phpunit/bin
 
 
 
@@ -62,7 +56,7 @@ Run
 ## Design Pattern Used
 1- `Static Factory` pattern to convert plan  Number from DB to the  according class should be implemented
 
-2- `Strategy pattern that I can dynamically implement any discount plan according to plan number from DB
+2- `Strategy` pattern that I can dynamically implement any discount plan according to plan number from DB
 
 3- `Composite` pattern to composite bill sections dynamically
 
@@ -75,13 +69,20 @@ Run
 
 
 ## Performance
--
+
 1- I chose to add all currencies and all Opposite symbols in a file in the config you can find it
 `config/currencies` as reading from a file will be better than reading from third-party or even DB,Because these currencies rarely changed.
 
 2- I Put an index on `name` column as this will make the query is faster.
 
 
+## Testing
+From PHP image
+* `docker-compose exec php bash`
+
+Run
+
+    vendor/phpunit/bin
 
 
 ## Tools
