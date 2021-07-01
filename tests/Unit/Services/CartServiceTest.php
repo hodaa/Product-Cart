@@ -46,7 +46,7 @@ class CartServiceTest extends TestCase
         config(['cart.currency' => 'EGP']);
 
         $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>1,'jacket'=>1,'shoes'=>1]);
-        $rate= app(CurrencyService::class)->getExchangeRate('EGP');
+        $rate = app(CurrencyService::class)->getExchangeRate('EGP');
         $subTotal= ($rate * 10.99)+($rate * 14.99)+($rate * 19.99)+($rate * 24.99);
 
         $this->assertEquals(round($response, 2), round($subTotal, 2));

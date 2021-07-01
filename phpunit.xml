@@ -28,7 +28,7 @@
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
 
-        <server name="TAX" value="20"/>
+        <server name="TAX" value="14"/>
         <server name="CURRENCY" value="USD"/>
         <server name="ROUND_LENGTH" value="1"/>
         <server name="DEFAULT_CURRENCY" value="USD"/>

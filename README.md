@@ -57,6 +57,8 @@ Run
 
 
 
+
+
 ## Design Pattern Used
 1- `Static Factory` pattern to convert plan  Number from DB to the  according class should be implemented
 
@@ -65,6 +67,12 @@ Run
 3- `Composite` pattern to composite bill sections dynamically
 
 3- `service` pattern I added all business logic in separate classes each class contains only one responsibility.
+
+
+
+
+
+
 
 ## Performance
 -
