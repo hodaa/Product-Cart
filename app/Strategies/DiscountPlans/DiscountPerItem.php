@@ -1,6 +1,7 @@
 <?php
 
 namespace  App\Strategies\DiscountPlans;
+
 use App\Models\Product;
 
 /**
@@ -17,8 +18,6 @@ class DiscountPerItem extends AbstractDiscountPlan
      */
     public function calculateDiscount(Product $item, array $selectedProducts): float
     {
-        $discount= ($item['price'] * $item['percent'])/100;
-        return  $discount;
-
+        return ($item->price * $item->percent)/100;
     }
 }

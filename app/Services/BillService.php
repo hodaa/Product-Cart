@@ -20,19 +20,12 @@ class BillService implements BillInterface
     private CartInterface $cartService;
 
     /**
-     * @var ProductService
-     */
-    private ProductService $productService;
-
-    /**
      * CartService constructor.
      * @param CartInterface $cartService
-     * @param ProductService $productService
      */
-    public function __construct(CartInterface $cartService, ProductService $productService)
+    public function __construct(CartInterface $cartService)
     {
         $this->cartService = $cartService;
-        $this->productService = $productService;
     }
 
     /**
@@ -40,20 +33,16 @@ class BillService implements BillInterface
      */
     public function print(): string
     {
-
-        $matchedProducts = $this->productService->getMatchedProducts();
-        $selectedProducts = $this->productService->getSelectedItemCount();
-
-        $subTotal = $this->cartService->calculateSubTotal($matchedProducts, $selectedProducts);
+        $subTotal = $this->cartService->calculateSubTotal();
         $taxes = $this->cartService->calculateTax($subTotal);
-        $discountData = $this->cartService->calculateDiscounts($matchedProducts, $selectedProducts);
-        $total = $this->cartService->calculateTotal($subTotal, $taxes, $discountData['discounts']);
+        $discountData = $this->cartService->calculateDiscounts();
+        $total = $this->cartService->calculateTotal($subTotal, $taxes, $discountData['totalDiscount']);
 
         $bill = new Bill();
 
         $bill->addElement(new SubTotal(new Price($subTotal)));
         $bill->addElement(new Tax(new Price($taxes)));
-        $bill->addElement(new DiscountBag($discountData['message']));
+        $bill->addElement(new DiscountBag($discountData['text']));
         $bill->addElement(new Total(new Price($total)));
 
         // You can add here whatever section You want to add to the bill ex:service

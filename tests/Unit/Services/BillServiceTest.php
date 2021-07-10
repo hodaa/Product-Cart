@@ -22,7 +22,7 @@ class BillServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->billService = new BillService(new CartService(), new ProductService(['jacket']));
+        $this->billService = new BillService(new CartService(['jackets'=>2]));
     }
 
     public function testPrint()

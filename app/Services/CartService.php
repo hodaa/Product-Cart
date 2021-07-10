@@ -2,31 +2,54 @@
 
 namespace App\Services;
 
+use App\Contracts\CartInterface;
 use App\Enums\DiscountPlans;
 use App\Factories\DiscountPlansFactory;
-use App\Contracts\CartInterface;
-use App\Composite\Discount;
-use App\Composite\Bill;
-use Illuminate\Database\Eloquent\Collection;
 
 class CartService implements CartInterface
 {
+    /**
+     * @var array
+     */
+    private array $products= [];
 
     /**
-     * @para\m Collection $matchedProducts
-     * @param array $selectedProducts
-     * @return float
+     * @var array
      */
-    public function calculateSubTotal(Collection $matchedProducts, array $selectedProducts): float
+    private array $purchases;
+
+    /**
+     * CartService constructor.
+     * @param $purchases
+     */
+    public function __construct($purchases)
     {
-        $result=[];
-        foreach ($matchedProducts as  $item) {
-            $itemCount = $selectedProducts[$item->name];
-            $result[$item->name] =  $item->price * $itemCount;
-        }
-        return array_sum($result);
+        $this->purchases =$purchases;
     }
 
+    /**
+     * @param $product
+     */
+    public function add($product)
+    {
+        $product->quantity= $this->purchases[$product->name];
+        $this->products[]= $product;
+    }
+
+    /**
+     * @return float
+     */
+    public function calculateSubTotal(): float
+    {
+        $total = 0.00;
+        $callback = function ($product) use (&$total) {
+            $total += ($product['price'] * $product['quantity']);
+        };
+
+        array_walk($this->products, $callback);
+
+        return $total;
+    }
 
     /**
      * @param $subTotal
@@ -37,35 +60,33 @@ class CartService implements CartInterface
         return $subTotal * config('cart.tax') / 100;
     }
 
+
     /**
-     * @param Collection $matchedProducts
-     * @param array $selectedProducts
      * @return array
      * @throws \ReflectionException
      */
-    public function calculateDiscounts(Collection $matchedProducts, array $selectedProducts): array
+    public function calculateDiscounts(): array
     {
-        $discounts = 0 ;
-        $bill = new Bill();
+        $text ="";
+        $discounts =0;
 
-        foreach ($matchedProducts as $item) {
-
+        $callback = function ($item) use (&$text, &$discounts) {
+            $item=(object)$item;
             if (!empty($item->plan) && in_array($item->plan, DiscountPlans::getValues())) {
-
-                $discountPlan =  DiscountPlans::getName($item['plan']);
+                $discountPlan =  DiscountPlans::getName($item->plan);
                 $discountPlanObj = DiscountPlansFactory::create($discountPlan);
-
-                $discountValue = $discountPlanObj->calculateDiscount($item, $selectedProducts);
-                $discounts+= $discountValue;
-
-                if ($discountValue) {
-                    $result = $discountPlanObj->setDiscountTemplate($item, $discountValue);
-                    $bill->addElement(new Discount($result));
+                $discounts+= $discountPlanObj->calculateDiscount($item, $this->purchases);
+                if ($discounts) {
+                    $text.= $discountPlanObj->setDiscountTemplate($item, $discounts)."\n";
                 }
             }
-        }
-        return ['message' => $bill->print() ,'discounts' => $discounts];
+        };
+
+        array_walk($this->products, $callback);
+        return ["totalDiscount"=>$discounts,"text"=>$text];
     }
+
+
 
 
     /**

@@ -2,15 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\CurrencyNotValid;
-use App\Exceptions\ProductNotValid;
-use App\Services\BillService;
+use App\Exceptions\ItemNotValid;
 use App\Services\CartService;
-use App\Services\CurrencyService;
 use App\Services\ProductService;
+use App\Validations\ValidatorInterface;
 use Illuminate\Console\Command;
 use App\Validations\CurrencyValidation;
 use App\Validations\ProductValidation;
+use App\Services\BillService;
 
 class CreateCart extends Command
 {
@@ -39,30 +38,43 @@ class CreateCart extends Command
     }
 
     /**
+     * @param ValidatorInterface $validator
+     * @param $params
+     * @param $exception
+     * @throws ItemNotValid
+     */
+    public function validate(ValidatorInterface $validator, $params, $exception)
+    {
+        if (! $validator->validate($params)) {
+            throw new ItemNotValid($exception);
+        }
+    }
+
+    /**
      * Execute the console command.
      *
      * @return void $subTotal
-     * @throws ProductNotValid|CurrencyNotValid
+     * @throws ItemNotValid
      */
     public function handle()
     {
         $items =$this->argument('items');
+        $this->validate(new ProductValidation(), $items, "This Product is not valid");
+
         $currency = $this->argument('currency');
-
-        $currencyValidation = new CurrencyValidation($currency);
-        if (!$currencyValidation->validate()) {
-            throw  new CurrencyNotValid("This Currency is not valid");
-        }
-
-
-        $productsValidation = new ProductValidation($items);
-        if (! $productsValidation->validate()) {
-            throw  new ProductNotValid("This Product is not valid");
-        }
+        $this->validate(new CurrencyValidation(), $currency, "This Currency is not valid");
 
         config(['cart.currency' => $currency]);
 
-        $bill = new BillService(new CartService(), new ProductService($items));
-        echo $bill->print();
+        $productService=  new ProductService($items);
+        $products = $productService->getMatchedProducts();
+        $purchases = $productService->getSelectedItemCount();
+
+        $my_cart = new CartService($purchases);
+        foreach ($products as $product) {
+            $my_cart->add($product);
+        }
+        $bill= new BillService($my_cart);
+        print $bill->print();
     }
 }

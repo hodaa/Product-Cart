@@ -7,19 +7,15 @@ use Illuminate\Database\Eloquent\Collection;
 interface CartInterface
 {
     /**
-     * @param Collection $matchedProducts
-     * @param array $selectedProducts
      * @return float
      */
-    public function calculateSubTotal(Collection $matchedProducts, array $selectedProducts): float;
+    public function calculateSubTotal(): float;
 
 
     /**
-     * @param array $matchedProducts
-     * @param array $selectedProducts
      * @return array
      */
-    public function calculateDiscounts(Collection $matchedProducts, array $selectedProducts): array;
+    public function calculateDiscounts(): array;
 
 
     /**

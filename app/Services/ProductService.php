@@ -22,6 +22,7 @@ class ProductService
         })->all();
     }
 
+
     /**
      * @return array
      */
@@ -51,10 +52,6 @@ class ProductService
             ->get();
     }
 
-    /**
-     * @param string $itemName
-     * @return int
-     */
     public function getSelectedItemCount(): array
     {
         return array_count_values($this->items);

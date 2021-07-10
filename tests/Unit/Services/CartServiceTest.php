@@ -40,22 +40,19 @@ class CartServiceTest extends TestCase
     }
 
 
-    public function testCalculateSubTotal()
-    {
-        $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>1,'jacket'=>1,'shoes'=>1]);
-        $this->assertEquals($response, 70.96);
-
-
-        config(['cart.currency' => 'EGP']);
-        $this->mock(CurrencyService::class, function (MockInterface $mock) {
-            $mock->shouldReceive('convertPrice')->andReturn(155.55);
-        });
-
-        $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>2,'jacket'=>1,'shoes'=>1]);
-        $subTotal= 155.55* 5;
-
-        $this->assertEquals(round($response, 2), round($subTotal, 2));
-    }
+//    public function testCalculateSubTotal()
+//    {
+//
+//        config(['cart.currency' => 'EGP']);
+//        $this->mock(CurrencyService::class, function (MockInterface $mock) {
+//            $mock->shouldReceive('convertPrice')->andReturn(155.55);
+//        });
+//
+//        $response= $this->cartService->calculateSubTotal(Product::all(), ['t-shirt'=>1,'pants'=>2,'jacket'=>1,'shoes'=>1]);
+//        $subTotal= 155.55* 5;
+//
+//        $this->assertEquals(round($response, 2), round($subTotal, 2));
+//    }
 
     public function testCalculateTax()
     {
@@ -67,18 +64,18 @@ class CartServiceTest extends TestCase
         $this->assertEquals(20, $result);
     }
 
-    public function testCalculateDiscounts()
-    {
-        $productService= new ProductService(['Jacket','Pants']);
-        $products= $productService->getMatchedProducts();
-        $response = $this->cartService->calculateDiscounts($products, ['t-shirt'=>1]);
-        $this->assertIsArray($response);
-        $discountValue= (14.99* 10)/100;
-        $this->assertEquals([
-                  "message" => "\t10% off pants: -$$discountValue\n",
-                  "discounts" => $discountValue
-            ], $response);
-    }
+//    public function testCalculateDiscounts()
+//    {
+//        $productService= new ProductService(['Jacket','Pants']);
+//        $products= $productService->getMatchedProducts();
+//        $response = $this->cartService->calculateDiscounts($products, ['t-shirt'=>1]);
+//        $this->assertIsArray($response);
+//        $discountValue= (14.99* 10)/100;
+//        $this->assertEquals([
+//                  "message" => "\t10% off pants: -$$discountValue\n",
+//                  "discounts" => $discountValue
+//            ], $response);
+//    }
 
     public function testCalculateTotal()
     {

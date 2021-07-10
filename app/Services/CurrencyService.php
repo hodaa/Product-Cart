@@ -49,23 +49,7 @@ class CurrencyService
         return Currency::convert()->from($this->defaultCurrency)->to($this->currency)->amount($price)->throw()->get();
     }
 
-    /**
-     * @param $currency
-     * @return mixed
-     */
-    public function getExchangeRate(string $currency): float
-    {
-        return  Currency::convert()->from($this->defaultCurrency)->to($currency)->get();
-    }
 
-    /**
-     * @param $price
-     * @return float
-     */
-    public function getConvertedSubTotal(float $price): float
-    {
-        return  ($this->currency !== $this->defaultCurrency) ? $this->convertPrice($this->currency, $price) : $price;
-    }
 
 
 }
