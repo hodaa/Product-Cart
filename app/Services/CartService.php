@@ -30,7 +30,7 @@ class CartService implements CartInterface
     /**
      * @param $product
      */
-    public function add($product)
+    public function add($product) //addItem
     {
         $product->quantity= $this->purchases[$product->name];
         $this->products[]= $product;

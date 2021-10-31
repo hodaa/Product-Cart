@@ -3,6 +3,7 @@
 namespace  App\Composite;
 
 use App\Contracts\BillInterface;
+use App\ValueObjects\Money;
 use App\ValueObjects\Price;
 
 class SubTotal implements BillInterface

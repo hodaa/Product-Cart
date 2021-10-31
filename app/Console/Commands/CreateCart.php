@@ -6,6 +6,7 @@ use App\Exceptions\ItemNotValid;
 use App\Services\CartService;
 use App\Services\ProductService;
 use App\Validations\ValidatorInterface;
+use App\ValueObjects\Currency;
 use Illuminate\Console\Command;
 use App\Validations\CurrencyValidation;
 use App\Validations\ProductValidation;
@@ -58,23 +59,22 @@ class CreateCart extends Command
      */
     public function handle()
     {
-        $items =$this->argument('items');
+        $items = $this->argument('items');
         $this->validate(new ProductValidation(), $items, "This Product is not valid");
 
         $currency = $this->argument('currency');
-        $this->validate(new CurrencyValidation(), $currency, "This Currency is not valid");
-
-        config(['cart.currency' => $currency]);
+        $currency = new Currency($currency);
+        config(['cart.currency' => $currency->isoCode()]);
 
         $productService=  new ProductService($items);
         $products = $productService->getMatchedProducts();
         $purchases = $productService->getSelectedItemCount();
 
-        $my_cart = new CartService($purchases);
+        $cart = new CartService($purchases);
         foreach ($products as $product) {
-            $my_cart->add($product);
+            $cart->add($product);
         }
-        $bill= new BillService($my_cart);
+        $bill= new BillService($cart);
         print $bill->print();
     }
 }

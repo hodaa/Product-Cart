@@ -10,6 +10,8 @@ use App\Composite\Tax;
 use App\Composite\Total;
 use App\Contracts\BillInterface;
 use App\Contracts\CartInterface;
+use App\ValueObjects\Currency;
+use App\ValueObjects\Money;
 use App\ValueObjects\Price;
 
 class BillService implements BillInterface
